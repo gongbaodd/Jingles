@@ -88,7 +88,7 @@ export default class Game {
       disableWebGL2Support: false,
     });
   }
-  static createScene(engine: Engine, canvas: HTMLCanvasElement) {
+  static async createScene(engine: Engine, canvas: HTMLCanvasElement) {
     const scene = new Scene(engine);
     const camera = new ArcRotateCamera(
       "Camera",
@@ -105,10 +105,11 @@ export default class Game {
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
 
-    Promise.all([
+    await Promise.all([
       Game.loadSkybox(scene),
-      Game.LoadPointCloud(scene),
+      // Game.LoadPointCloud(scene),
     ]);
+
 
     return scene;
   }
@@ -120,7 +121,10 @@ export default class Game {
     const canvas = engine.getRenderingCanvas();
 
     if (canvas) {
-      const scene = Game.createScene(engine, canvas);
+      const scene = await Game.createScene(engine, canvas);
+
+    ImportMeshAsync("point-cloud/logo.ply", scene);
+
 
       // const debuglayer = await scene.debugLayer.show();
       // debuglayer.popupSceneExplorer();
