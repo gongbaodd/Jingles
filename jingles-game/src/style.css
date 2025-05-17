@@ -27,3 +27,10 @@ body {
   height: 100vh;
   touch-action: none;
 }
+
+#xr-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 9999;
+}
