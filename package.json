@@ -11,10 +11,13 @@
   "dependencies": {
     "@babylonjs/core": "^8.7.0",
     "@babylonjs/materials": "^8.7.0",
+    "@react-three/fiber": "^9.1.2",
+    "@types/three": "^0.176.0",
     "dat.gui": "^0.7.9",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-server-dom-webpack": "19.1.0",
+    "three": "^0.176.0",
     "waku": "0.22.4"
   },
   "devDependencies": {

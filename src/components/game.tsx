@@ -1,47 +1,26 @@
 "use client";
-import { useEffect, useRef } from "react"
-import Game from "../game";
+import { Canvas, useLoader, useThree } from "@react-three/fiber";
+import { Suspense, useRef } from "react";
+import { BackSide, Mesh, TextureLoader } from "three";
 
-declare global {
-    interface Window {
-        __GAME__: Game | null;
-    }
+function Panorama({ url }: { url: string }) {
+  const texture = useLoader(TextureLoader, url)
+  const sphereRef = useRef<Mesh>(null)
+
+  return (
+    <mesh ref={sphereRef}>
+      <sphereGeometry args={[500, 60, 40]} />
+      <meshBasicMaterial map={texture} side={BackSide} />
+    </mesh>
+  )
 }
 
 export const GameComponent = () => {
-    const canvasRef = useRef<HTMLCanvasElement | null>(null)
-
-    useEffect(() => {
-        const canvas = canvasRef.current
-        if (!canvas) return;
-
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const engine = Game.createDefaultEngine(canvas);
-        const game = new Game();
-
-        window.__GAME__ = game;
-
-        game.createScene(engine);
-        game.startRenderLoop();
-
-        const onResize = () => {
-            engine.resize();
-        }
-
-        window.addEventListener("resize", onResize);
-
-        return () => {
-            window.__GAME__ = null;
-            window.removeEventListener("resize", onResize);
-        }
-    }, [])
-
-
     return (
-        <div>
-            <canvas id="game" ref={canvasRef}></canvas>
-        </div>
+        <Canvas camera={{ position: [0, 0, 0], fov: 75 }}>
+            <Suspense fallback={null}>
+                <Panorama url="/images/sky.jpg" />
+            </Suspense>
+        </Canvas>
     )
 }
