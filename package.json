@@ -11,6 +11,7 @@
   "dependencies": {
     "@babylonjs/core": "^8.7.0",
     "@babylonjs/materials": "^8.7.0",
+    "dat.gui": "^0.7.9",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-server-dom-webpack": "19.1.0",
@@ -18,6 +19,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.1.4",
+    "@types/dat.gui": "^0.7.13",
     "@types/react": "19.1.2",
     "@types/react-dom": "19.1.2",
     "postcss": "8.5.3",

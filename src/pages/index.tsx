@@ -1,11 +1,11 @@
-import { Game } from "../components/game";
+import { GameComponent } from "../components/game";
 
 export default async function HomePage() {
   const data = await getData();
   return (
     <div>
       <title>{data.title}</title>
-      <Game />
+      <GameComponent />
     </div>
   );
 }
