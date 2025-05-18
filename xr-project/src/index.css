@@ -20,3 +20,11 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+
+
+#xr-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 9999;
+}
