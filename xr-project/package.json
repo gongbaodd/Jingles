@@ -14,8 +14,8 @@
     "@babylonjs/inspector": "^8.8.5",
     "@babylonjs/loaders": "^8.8.5",
     "@babylonjs/materials": "^8.8.5",
-    "@iwer/devui": "^1.1.1",
-    "iwer": "^2.0.1",
+    "@iwer/devui": "^0.1.1",
+    "iwer": "^1.0.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "vite-plugin-mkcert": "^1.17.8"
