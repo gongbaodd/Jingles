@@ -18,14 +18,14 @@ const engine = new Engine(canvas, true, {
   stencil: true,
   disableWebGL2Support: false,
 });
-let scene = createScene(engine);
+let scene = await createScene(engine);
 engine.runRenderLoop(() => scene.render());
 
 
 if (import.meta.hot) {
-  import.meta.hot.accept("./scene", mod => {
+  import.meta.hot.accept("./scene", async mod => {
     scene.dispose();
 
-    scene = mod!.createScene(engine);
+    scene = await mod!.createScene(engine);
   });
 }
