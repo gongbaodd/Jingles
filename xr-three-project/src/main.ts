@@ -2,7 +2,7 @@ import "./index.css";
 import { DevUI } from "@iwer/devui";
 import { metaQuest3, XRDevice } from "iwer";
 import { createScene, onFrame } from "./scene";
-import { Clock, WebGLRenderer } from "three";
+import { Clock, PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import { VRButton } from "three/examples/jsm/Addons.js";
 
 declare global {
@@ -40,34 +40,30 @@ async function setupXR() {
   }
 }
 
-await setupXR();
-
+let renderer: WebGLRenderer;
+let scene: Scene;
+let camera: PerspectiveCamera;
 const container = document.createElement("div");
 document.body.appendChild(container);
 
-const renderer = new WebGLRenderer({ antialias: true });
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.xr.enabled = true;
-container.appendChild(renderer.domElement);
+setupXR().then(() => {
+  renderer = new WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.xr.enabled = true;
+  container.appendChild(renderer.domElement);
 
-let { scene, camera, controllers } = createScene(container, renderer);
+  ({ scene, camera } = createScene(container, renderer));
+  renderer.setAnimationLoop(animate);
+
+  document.body.appendChild(VRButton.createButton(renderer));
+});
 
 window.addEventListener("resize", onWindowResize);
-
-renderer.setAnimationLoop(animate);
-
-document.body.appendChild(VRButton.createButton(renderer));
 
 const clock = new Clock();
 function animate() {
   const delta = clock.getDelta();
-  Object.values(controllers).forEach((controller) => {
-    if (controller?.gamepad) {
-      controller.gamepad.update();
-    }
-  });
-
   onFrame(delta);
   renderer.render(scene, camera);
 }

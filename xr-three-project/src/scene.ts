@@ -144,85 +144,94 @@ const bulletSpeed = 10;
 const bulletTimeToLive = 1;
 const bullets: Record<string, Object3D> = {};
 export function onFrame(delta: number) {
+  Object.values(controllers).forEach((controller) => {
+    if (controller?.gamepad) {
+      controller.gamepad.update();
+    }
+  });
+
   if (controllers.right) {
     const { gamepad, raySpace, mesh } = controllers.right;
     if (!raySpace.children.includes(blasterGroup)) {
-        raySpace.add(blasterGroup);
-        mesh.visible = false;
+      raySpace.add(blasterGroup);
+      mesh.visible = false;
     }
 
     if (gamepad.getButtonClick(XR_BUTTONS.TRIGGER)) {
-        try {
-            gamepad.getHapticActuator(0).pulse(0.6, 100);
-        } catch {}
+      try {
+        gamepad.getHapticActuator(0).pulse(0.6, 100);
+      } catch {}
 
-        if (laserSound.isPlaying) laserSound.stop();
-        laserSound.play();
+      if (laserSound.isPlaying) laserSound.stop();
+      laserSound.play();
 
-        const bulletPrototype = blasterGroup.getObjectByName("bullet");
-        if (bulletPrototype) {
-            const bullet = bulletPrototype.clone();
-            scene.add(bullet);
-            bulletPrototype.getWorldPosition(bullet.position);
-            bulletPrototype.getWorldQuaternion(bullet.quaternion);
+      const bulletPrototype = blasterGroup.getObjectByName("bullet");
+      if (bulletPrototype) {
+        const bullet = bulletPrototype.clone();
+        scene.add(bullet);
+        bulletPrototype.getWorldPosition(bullet.position);
+        bulletPrototype.getWorldQuaternion(bullet.quaternion);
 
-            const directionVector = forwardVector.clone().applyQuaternion(bullet.quaternion);
-            bullet.userData = {
-                velocity: directionVector.multiplyScalar(bulletSpeed),
-                timeToLive: bulletTimeToLive
-            }
-            bullets[bullet.uuid] = bullet;
-        }
+        const directionVector = forwardVector
+          .clone()
+          .applyQuaternion(bullet.quaternion);
+        bullet.userData = {
+          velocity: directionVector.multiplyScalar(bulletSpeed),
+          timeToLive: bulletTimeToLive,
+        };
+        bullets[bullet.uuid] = bullet;
+      }
     }
   }
 
-  Object.values(bullets).forEach(bullet => {
+  Object.values(bullets).forEach((bullet) => {
     if (bullet.userData.timeToLive < 0) {
-        delete bullets[bullet.uuid];
-        scene.remove(bullet)
-        return;
+      delete bullets[bullet.uuid];
+      scene.remove(bullet);
+      return;
     }
 
     const deltaVec = bullet.userData.velocity.clone().multiplyScalar(delta);
     bullet.position.add(deltaVec);
     bullet.userData.timeToLive -= delta;
 
-    targets.filter(target => target.visible).forEach(target => {
+    targets
+      .filter((target) => target.visible)
+      .forEach((target) => {
         const distance = target.position.distanceTo(bullet.position);
         if (distance < 1) {
-            delete bullets[bullet.uuid];
-            scene.remove(bullet);
+          delete bullets[bullet.uuid];
+          scene.remove(bullet);
 
-            gsap.to(target.scale, {
-                duration: 0.3,
-                x: 0,
-                y: 0,
-                z: 0,
-                onComplete: () => {
-                    target.visible = false;
-                    setTimeout(() => {
-                        target.visible = true;
-                        target.position.x = Math.random() * 10 - 5;
-                        target.position.y = -Math.random() * 5 - 5;
+          gsap.to(target.scale, {
+            duration: 0.3,
+            x: 0,
+            y: 0,
+            z: 0,
+            onComplete: () => {
+              target.visible = false;
+              setTimeout(() => {
+                target.visible = true;
+                target.position.x = Math.random() * 10 - 5;
+                target.position.y = -Math.random() * 5 - 5;
 
-                        gsap.to(target.scale, {
-                            duration: 0.3,
-                            x: 1,
-                            y: 1,
-                            z: 1,
-                        })
-                    }, 1000)
-                }
-            })
+                gsap.to(target.scale, {
+                  duration: 0.3,
+                  x: 1,
+                  y: 1,
+                  z: 1,
+                });
+              }, 1000);
+            },
+          });
 
-            score += 10;
-            updateScore();
-            if (scoreSound.isPlaying) scoreSound.stop();
-            scoreSound.play();
+          score += 10;
+          updateScore();
+          if (scoreSound.isPlaying) scoreSound.stop();
+          scoreSound.play();
         }
-    })
-
-  })
+      });
+  });
 
   gsap.ticker.tick();
 }
