@@ -6,31 +6,6 @@ import { registerBuiltInLoaders } from "@babylonjs/loaders/dynamic"
 import { XRDevice, metaQuest3 } from 'iwer';
 import { DevUI } from '@iwer/devui';
 
-registerBuiltInLoaders();
-
-const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-const onResize = () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-};
-
-window.addEventListener("resize", onResize);
-
-const engine = new Engine(canvas, true, {
-  preserveDrawingBuffer: true,
-  stencil: true,
-  disableWebGL2Support: false,
-});
-let scene = await createScene(engine);
-engine.runRenderLoop(() => scene.render());
-
-
-document.getElementById("xr-button")!.addEventListener("click", async () => {
-  if (!scene) return;
-
   	// iwer setup
 	let nativeWebXRSupport = false;
 	if (navigator.xr) {
@@ -58,6 +33,33 @@ document.getElementById("xr-button")!.addEventListener("click", async () => {
 		);
 		new DevUI(xrDevice);
 	}
+
+registerBuiltInLoaders();
+
+const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+const onResize = () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+};
+
+window.addEventListener("resize", onResize);
+
+const engine = new Engine(canvas, true, {
+  preserveDrawingBuffer: true,
+  stencil: true,
+  disableWebGL2Support: false,
+});
+let scene = await createScene(engine);
+engine.runRenderLoop(() => scene.render());
+
+
+document.getElementById("xr-button")!.addEventListener("click", async () => {
+  if (!scene) return;
+
+
 
 
   try {
