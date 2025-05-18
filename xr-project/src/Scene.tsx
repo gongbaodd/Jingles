@@ -29,7 +29,7 @@ function loadSky(scene: Scene) {
     const eqTexture = new EquiRectangularCubeTexture(
         "./images/sky.jpg",
         scene,
-        1024,
+        128,
     );
     eqTexture.coordinatesMode = Texture.SKYBOX_MODE;
 
