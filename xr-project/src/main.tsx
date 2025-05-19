@@ -1,13 +1,20 @@
-import { Engine, Scene } from '@babylonjs/core';
+import { Engine, Mesh, Scene } from '@babylonjs/core';
 import './index.css'
 import { createScene } from './Scene';
 import "@babylonjs/inspector";
 import { registerBuiltInLoaders } from "@babylonjs/loaders/dynamic"
 import { XRDevice, metaQuest3 } from 'iwer';
 import { DevUI } from '@iwer/devui';
+declare global {
+  interface Window {
+    scene: Scene;
+    ground: Mesh;
+  }
+}
 
 let scene: Scene;
 let engine: Engine;
+let ground: Mesh;
 async function init() {
   // iwer setup
   let nativeWebXRSupport = false;
@@ -54,33 +61,22 @@ async function init() {
     stencil: true,
     disableWebGL2Support: false,
   });
-  scene = await createScene(engine);
+  ({scene, ground} = await createScene(engine));
+
+  window.scene = scene;
+  window.ground = ground;
+
   engine.runRenderLoop(() => scene.render());
 
-
-  document.getElementById("xr-button")!.addEventListener("click", async () => {
-    if (!scene) return;
-
-    try {
-      const xrHelper = await scene.createDefaultXRExperienceAsync({
-        uiOptions: {
-          sessionMode: "immersive-vr",
-        },
-        optionalFeatures: true,
-      });
-
-      // Start XR session
-      xrHelper.baseExperience
-        .enterXRAsync("immersive-vr", "local-floor")
-        .then(() => {
-          console.log("Entered XR");
-        });
-
-    } catch (e) {
-      console.error("WebXR not supported or failed to enter:", e);
-    }
-  });
+  // document.getElementById("xr-button")!.addEventListener("click", onEnterVr);
 }
+
+window.addEventListener("keydown", async e => {
+  if (e.key.toLowerCase() === "i") {
+    const debug = await scene.debugLayer.show();
+    debug.popupInspector();
+  }
+});
 
 init();
 
@@ -88,6 +84,8 @@ if (import.meta.hot) {
   import.meta.hot.accept("./scene", async mod => {
     scene.dispose();
 
-    scene = await mod!.createScene(engine);
+    ({scene, ground} = await mod!.createScene(engine));
+    window.scene = scene;
+    window.ground = ground;
   });
 }
