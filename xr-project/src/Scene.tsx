@@ -131,7 +131,7 @@ export async function createScene(engine: Engine) {
     target5.position.x = -800;
     target5.position.z = 800;
     target5.position.y = -150;
-    target5.rotation.y = 40;
+    target5.rotation.y = -40/180 * Math.PI;
 
     const target6 = MeshBuilder.CreateText(
         "Terra",
@@ -220,6 +220,8 @@ async function loadPointCloud(assetManager: AssetsManager) {
 
     const mesh = result[0];
     mesh.position.y = -50.0;
+    mesh.position.z = -300;
+    mesh.position.z = 50;
     mesh.rotation.z = Math.PI;
     mesh.rotation.y = -280 / 360 * Math.PI;
     mesh.scaling.x = 100;
